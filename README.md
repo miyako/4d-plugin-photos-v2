@@ -7,6 +7,12 @@ Copy selection of images from Photos.app
 |:------:|:-----:|:---------:|:---------:|
 |🆗|🆗|🚫|🚫|
 
+##Attention
+
+You should disable iCould photo library update, or select "download original to this Mac", to prevent Photo from attempting to access the internet. Otherwise, the import could fail, and the application could freeze, if internet connection in unavailable.
+
+![](https://cloud.githubusercontent.com/assets/1725068/15090786/3e4d4766-1434-11e6-8c69-1a53f860e27d.png)
+
 ##Examples
 
 ```
