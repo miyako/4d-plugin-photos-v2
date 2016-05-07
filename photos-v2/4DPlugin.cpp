@@ -49,7 +49,7 @@ void CommandDispatcher (PA_long32 pProcNum, sLONG_PTR *pResult, PackagePtr pPara
 
 void importImages()
 {
-	BOOL usingOriginals = YES;
+	BOOL usingOriginals = YES;//NO returns larger images
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
 	NSString *cachesFolder = [paths objectAtIndex:0];
 	NSArray *photos = [Photos selection];
@@ -92,8 +92,14 @@ void importImages()
 			//export
 			NSURL *exportFolderUrl = [cachesFolderUrl URLByAppendingPathComponent:folderName isDirectory:true];
 			[Photos export:[NSArray arrayWithObject:photo] to:exportFolderUrl usingOriginals:usingOriginals];
-			NSURL *exportFileUrl = [exportFolderUrl URLByAppendingPathComponent:photo.filename isDirectory:false];
+			NSURL *exportFileUrl;
 			
+			if(!usingOriginals)
+			{
+				exportFileUrl = [exportFolderUrl URLByAppendingPathComponent:[[photo.filename stringByDeletingPathExtension]stringByAppendingString:@".jpg"] isDirectory:false];
+			}else{
+				exportFileUrl = [exportFolderUrl URLByAppendingPathComponent:photo.filename isDirectory:false];
+			}
 			NSData *data = [[NSData alloc]initWithContentsOfURL:exportFileUrl];
 			
 			if(data)
@@ -103,6 +109,7 @@ void importImages()
 				PA_Variable result = PA_ExecuteMethodByID(methodId, params, 6);
 				[data release];
 				//do we need to clear the picture too?
+				PA_ClearVariable(&params[0]);
 				PA_ClearVariable(&params[1]);
 				PA_ClearVariable(&params[2]);
 				PA_ClearVariable(&params[3]);
@@ -216,7 +223,14 @@ void Photos_GET_SELECTION(sLONG_PTR *pResult, PackagePtr pParams)
 					//export
 					NSURL *exportFolderUrl = [cachesFolderUrl URLByAppendingPathComponent:folderName isDirectory:true];
 					[Photos export:[NSArray arrayWithObject:photo] to:exportFolderUrl usingOriginals:usingOriginals];
-					NSURL *exportFileUrl = [exportFolderUrl URLByAppendingPathComponent:photo.filename isDirectory:false];
+					NSURL *exportFileUrl;
+					if(!usingOriginals)
+					{
+						//the extension is changed to jpg
+						exportFileUrl = [exportFolderUrl URLByAppendingPathComponent:[[photo.filename stringByDeletingPathExtension]stringByAppendingString:@".jpg"] isDirectory:false];
+					}else{
+						exportFileUrl = [exportFolderUrl URLByAppendingPathComponent:photo.filename isDirectory:false];
+					}
 					
 					NSData *data = [[NSData alloc]initWithContentsOfURL:exportFileUrl];
 					
