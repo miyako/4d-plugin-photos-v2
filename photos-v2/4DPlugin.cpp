@@ -134,6 +134,29 @@ void importImages()
 	}
 }
 
+NSURL *makeTemporaryFolder()
+{
+	NSURL *temporaryDirectoryURL = nil;
+	
+	NSArray *URLs = [[NSFileManager defaultManager]
+									 URLsForDirectory:NSDesktopDirectory
+									 inDomains:NSUserDomainMask];
+	
+	if(URLs && [URLs count])
+	{
+		NSURL *desktopURL = [URLs objectAtIndex:0];
+		
+		temporaryDirectoryURL = [[NSFileManager defaultManager]
+														 URLForDirectory:NSItemReplacementDirectory
+														 inDomain:NSUserDomainMask
+														 appropriateForURL:desktopURL
+														 create:YES
+														 error:nil];
+	}
+	
+	return temporaryDirectoryURL;
+}
+
 void generateUuid(C_TEXT &returnValue)
 {
 #if __MAC_OS_X_VERSION_MAX_ALLOWED >= 1080
@@ -195,8 +218,13 @@ void Photos_GET_SELECTION(sLONG_PTR *pResult, PackagePtr pParams)
 	Param_ids  .setSize(1);
 	
 	BOOL usingOriginals = YES;
+	
+	/*
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
 	NSString *cachesFolder = [paths objectAtIndex:0];
+	*/
+	
+	NSURL *cachesFolderUrl = makeTemporaryFolder();
 	
 	if(Photos)
 	{
@@ -218,7 +246,7 @@ void Photos_GET_SELECTION(sLONG_PTR *pResult, PackagePtr pParams)
 					//setup
 					NSUUID *uuid = [[NSUUID alloc]init];
 					NSString *folderName = [uuid UUIDString];
-					NSURL *cachesFolderUrl = (NSURL *)CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)cachesFolder, kCFURLPOSIXPathStyle, true);
+//					NSURL *cachesFolderUrl = (NSURL *)CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)cachesFolder, kCFURLPOSIXPathStyle, true);
 					
 					//export
 					NSURL *exportFolderUrl = [cachesFolderUrl URLByAppendingPathComponent:folderName isDirectory:true];
