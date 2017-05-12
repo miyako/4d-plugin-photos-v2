@@ -50,8 +50,14 @@ void CommandDispatcher (PA_long32 pProcNum, sLONG_PTR *pResult, PackagePtr pPara
 void importImages()
 {
 	BOOL usingOriginals = YES;//NO returns larger images
+	
+	/*
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
 	NSString *cachesFolder = [paths objectAtIndex:0];
+	*/
+	
+	NSURL *cachesFolderUrl = makeTemporaryFolder();
+	
 	NSArray *photos = [Photos selection];
 	NSUInteger count = [photos count];
 	for(NSUInteger i = 0; i < count; ++i)
@@ -87,7 +93,7 @@ void importImages()
 			//setup
 			NSUUID *uuid = [[NSUUID alloc]init];
 			NSString *folderName = [uuid UUIDString];
-			NSURL *cachesFolderUrl = (NSURL *)CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)cachesFolder, kCFURLPOSIXPathStyle, true);
+//			NSURL *cachesFolderUrl = (NSURL *)CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)cachesFolder, kCFURLPOSIXPathStyle, true);
 			
 			//export
 			NSURL *exportFolderUrl = [cachesFolderUrl URLByAppendingPathComponent:folderName isDirectory:true];

@@ -28,6 +28,8 @@
 @property (copy, readonly) NSArray *selection;  // The currently selected media items in the application
 @end
 
+NSURL *makeTemporaryFolder();
+
 // --- Photos
 void Photos_GET_SELECTION(sLONG_PTR *pResult, PackagePtr pParams);
 
