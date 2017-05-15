@@ -124,7 +124,7 @@ void importImages()
 				
 				//cleanup
 				[[NSFileManager defaultManager]removeItemAtURL:exportFolderUrl error:nil];
-				[cachesFolderUrl release];
+//				[cachesFolderUrl release];
 				[uuid release];
 				
 				if(result.fType == eVK_Boolean)
@@ -278,7 +278,7 @@ void Photos_GET_SELECTION(sLONG_PTR *pResult, PackagePtr pParams)
 					
 					//cleanup
 					[[NSFileManager defaultManager]removeItemAtURL:exportFolderUrl error:nil];
-					[cachesFolderUrl release];
+//					[cachesFolderUrl release];
 					[uuid release];
 					
 				}
