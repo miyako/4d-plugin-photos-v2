@@ -1,19 +1,19 @@
 # 4d-plugin-photos-v2
 Copy selection of images from Photos.app
 
-##Platform
+### Platform
 
 | carbon | cocoa | win32 | win64 |
 |:------:|:-----:|:---------:|:---------:|
-|🆗|🆗|🚫|🚫|
+|https://github.com/miyako/4d-plugin-file|https://github.com/miyako/4d-plugin-file|||
 
-##Attention
+## Attention
 
 You should disable iCould photo library update, or select "download original to this Mac", to prevent Photo from attempting to access the internet. Otherwise, the import could fail, and the application could freeze, if internet connection in unavailable.
 
 ![](https://cloud.githubusercontent.com/assets/1725068/15090786/3e4d4766-1434-11e6-8c69-1a53f860e27d.png)
 
-##Examples
+## Examples
 
 ```
   //this is not really a drag-n-drop api, it simply returns the selected images in Photos.app
