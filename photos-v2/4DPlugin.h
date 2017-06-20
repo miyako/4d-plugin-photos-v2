@@ -31,7 +31,8 @@
 NSURL *makeTemporaryFolder();
 
 // --- Photos
-void Photos_GET_SELECTION(sLONG_PTR *pResult, PackagePtr pParams);
+//void Photos_GET_SELECTION(sLONG_PTR *pResult, PackagePtr pParams);
+void Photos_GET_SELECTION(PA_PluginParameters params);
 
 typedef PA_long32 process_number_t;
 typedef PA_long32 process_stack_size_t;

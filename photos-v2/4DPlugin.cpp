@@ -21,10 +21,19 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params)
 	try
 	{
 		PA_long32 pProcNum = selector;
-		sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
-		PackagePtr pParams = (PackagePtr)params->fParameters;
+//		sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
+//		PackagePtr pParams = (PackagePtr)params->fParameters;
 
-		CommandDispatcher(pProcNum, pResult, pParams); 
+		switch(pProcNum)
+		{
+				// --- Photos
+				
+			case 1 :
+				Photos_GET_SELECTION(params);
+				break;
+				
+		}
+		//		CommandDispatcher(pProcNum, pResult, pParams); 
 	}
 	catch(...)
 	{
@@ -32,6 +41,7 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params)
 	}
 }
 
+/*
 void CommandDispatcher (PA_long32 pProcNum, sLONG_PTR *pResult, PackagePtr pParams)
 {
 	switch(pProcNum)
@@ -44,6 +54,7 @@ void CommandDispatcher (PA_long32 pProcNum, sLONG_PTR *pResult, PackagePtr pPara
 
 	}
 }
+*/
 
 // ------------------------------------ Photos ------------------------------------
 
@@ -186,9 +197,15 @@ void setArrayParameter(PA_Variable *param, PackagePtr pParams, unsigned int i)
 
 #pragma mark -
 
-void Photos_GET_SELECTION(sLONG_PTR *pResult, PackagePtr pParams)
+void Photos_GET_SELECTION(PA_PluginParameters params)
+//void Photos_GET_SELECTION(sLONG_PTR *pResult, PackagePtr pParams)
 {
+	//	sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
+	PackagePtr pParams = (PackagePtr)params->fParameters;
+	
 	//$1
+	PA_Variable Param_selectedNames = PA_CreateVariable(eVK_ArrayPicture);
+	/*
 	PA_Variable Param_selectedNames = *((PA_Variable*) pParams[0]);
 	
 	switch (Param_selectedNames.fType)
@@ -204,6 +221,7 @@ void Photos_GET_SELECTION(sLONG_PTR *pResult, PackagePtr pParams)
 	}
 	
 	PA_ResizeArray(&Param_selectedNames, 0);
+	*/
 	
 	//$6
 	C_LONGINT Param_processId;
@@ -294,7 +312,9 @@ void Photos_GET_SELECTION(sLONG_PTR *pResult, PackagePtr pParams)
 										(PA_Unichar *)processName.getUTF16StringPtr()));
 		}
 	}
-	setArrayParameter(&Param_selectedNames, pParams, 1);
+	
+//	setArrayParameter(&Param_selectedNames, pParams, 1);
+	PA_SetVariableParameter(params, 1, Param_selectedNames, 0);
 	
 	Param_names.toParamAtIndex(pParams, 2);
 	Param_dates.toParamAtIndex(pParams, 3);
