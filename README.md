@@ -5,7 +5,13 @@ Copy selection of images from Photos.app
 
 | carbon | cocoa | win32 | win64 |
 |:------:|:-----:|:---------:|:---------:|
-|<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|||
+||<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|||
+
+### Releases
+
+[1.2](https://github.com/miyako/4d-plugin-photos-v2/releases/tag/1.2)
+
+**Note**: You must sign the app with automation permission. See [build-application](https://github.com/miyako/4d-utility-build-application)
 
 ### Alternative solution
 
