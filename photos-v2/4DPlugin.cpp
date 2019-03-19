@@ -12,20 +12,74 @@
 #include "4DPluginAPI.h"
 #include "4DPlugin.h"
 
+#ifndef errAEEventWouldRequireUserConsent
+enum {
+    errAEEventWouldRequireUserConsent     =     -1744
+};
+#endif
+
+void requestPermission(){
+    
+    if (@available(macOS 10.14, *)) {
+        OSStatus status;
+        
+        /*
+         alternatively
+         NSAppleEventDescriptor *targetAppEventDescriptor;
+         targetAppEventDescriptor = [NSAppleEventDescriptor descriptorWithBundleIdentifier:@"com.apple.Notes"];
+         and pass targetAppEventDescriptor.aeDesc to AEDeterminePermissionToAutomateTarget()
+         */
+        
+        AEAddressDesc addressDesc;
+        NSString *bundleIdentifier = @"com.apple.Photos";
+        const char *bundleIdentifierCString = [bundleIdentifier cStringUsingEncoding:NSUTF8StringEncoding];
+        if(AECreateDesc(typeApplicationBundleID, bundleIdentifierCString, strlen(bundleIdentifierCString), &addressDesc) == noErr)
+        {
+            status = AEDeterminePermissionToAutomateTarget(&addressDesc, typeWildCard, typeWildCard, true);
+            AEDisposeDesc(&addressDesc);
+            
+            switch (status) {
+                case errAEEventWouldRequireUserConsent:
+                    NSLog(@"Automation permission pending for %@", bundleIdentifier);
+                    break;
+                case noErr:
+                    NSLog(@"Automation permission granted for %@", bundleIdentifier);
+                    break;
+                case errAEEventNotPermitted:
+                    NSLog(@"Automation permission denied for %@", bundleIdentifier);
+                    break;
+                case procNotFound:
+                    NSLog(@"Automation permission unknown for %@", bundleIdentifier);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}
+
 static PhotosApplication *Photos = [SBApplication applicationWithBundleIdentifier:@"com.apple.Photos"];
 
 method_id_t methodId;
+
+void OnStartup()
+{
+    requestPermission();
+}
 
 void PluginMain(PA_long32 selector, PA_PluginParameters params)
 {
 	try
 	{
 		PA_long32 pProcNum = selector;
-//		sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
-//		PackagePtr pParams = (PackagePtr)params->fParameters;
 
 		switch(pProcNum)
 		{
+            case kInitPlugin :
+            case kServerInitPlugin :
+                OnStartup();
+                break;
+                
 				// --- Photos
 				
 			case 1 :
@@ -33,28 +87,13 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params)
 				break;
 				
 		}
-		//		CommandDispatcher(pProcNum, pResult, pParams); 
+
 	}
 	catch(...)
 	{
 
 	}
 }
-
-/*
-void CommandDispatcher (PA_long32 pProcNum, sLONG_PTR *pResult, PackagePtr pParams)
-{
-	switch(pProcNum)
-	{
-// --- Photos
-
-		case 1 :
-			Photos_GET_SELECTION(pResult, pParams);
-			break;
-
-	}
-}
-*/
 
 // ------------------------------------ Photos ------------------------------------
 
@@ -322,5 +361,3 @@ void Photos_GET_SELECTION(PA_PluginParameters params)
 	
 	Param_processId.toParamAtIndex(pParams, 6);
 }
-
-

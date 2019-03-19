@@ -1,1 +1,11 @@
-﻿{"name":"Photos v2","id":20000,"commands":[{"theme":"Photos","syntax":"Photos GET SELECTION(&Y;&Y;&Y;&Y;&T;&L)"}]}
+{
+	"name": "Photos v2",
+	"id": 20000,
+	"commands": [
+		{
+			"theme": "Photos",
+			"syntax": "Photos GET SELECTION(&Y;&Y;&Y;&Y;&T;&L)",
+			"threadSafe": false
+		}
+	]
+}
