@@ -9,9 +9,15 @@ Copy selection of images from Photos.app
 
 ### Releases
 
-[1.2](https://github.com/miyako/4d-plugin-photos-v2/releases/tag/1.2)
+You must codesign your app with the following entitlement:
 
-**Note**: You must sign the app with automation permission. See [build-application](https://github.com/miyako/4d-utility-build-application)
+* ``com.apple.security.automation.apple-events`` 
+
+The app must also have the following property list key:
+
+* ``NSAppleEventsUsageDescription``
+
+See [build-application](https://github.com/miyako/4d-utility-build-application)
 
 ### Alternative solution
 
