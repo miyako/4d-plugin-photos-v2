@@ -1,6 +1,8 @@
 # 4d-plugin-photos-v2
 Copy selection of images from Photos.app
 
+See [4d-utility-sign-app](https://github.com/miyako/4d-utility-sign-app) on how to enable the plugin in 4D.
+
 ### Platform
 
 | carbon | cocoa | win32 | win64 |
