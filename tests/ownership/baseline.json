@@ -1,0 +1,674 @@
+{
+ "allocation-failure-ARRAY_BOOLEAN": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL array allocation failure preserves undefined output"
+  ]
+ },
+ "allocation-failure-ARRAY_DATE": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL array allocation failure preserves undefined output"
+  ]
+ },
+ "allocation-failure-ARRAY_INTEGER": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL array allocation failure preserves undefined output"
+  ]
+ },
+ "allocation-failure-ARRAY_LONGINT": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL array allocation failure preserves undefined output"
+  ]
+ },
+ "allocation-failure-ARRAY_REAL": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL array allocation failure preserves undefined output"
+  ]
+ },
+ "allocation-failure-ARRAY_TEXT": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL array allocation failure preserves undefined output"
+  ]
+ },
+ "allocation-failure-ARRAY_TIME": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL array allocation failure preserves undefined output"
+  ]
+ },
+ "blob-allocation-failure": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL blob allocation failure preserves existing owner"
+  ]
+ },
+ "blob-controls": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "blob-plugin-parameters": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL plugin empty BLOB clears reused wrapper"
+  ]
+ },
+ "blob-reuse-0": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL null empty resets blob"
+  ]
+ },
+ "blob-reuse-1": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL empty blob parameter clears reused wrapper"
+  ]
+ },
+ "blob-reuse-2": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL reused blob resets cursor"
+  ]
+ },
+ "blob-reuse-3": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_BOOLEAN-0": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_BOOLEAN-1": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_BOOLEAN-2": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "control-ARRAY_DATE-0": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_DATE-1": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_DATE-2": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "control-ARRAY_INTEGER-0": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_INTEGER-1": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_INTEGER-2": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "control-ARRAY_LONGINT-0": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_LONGINT-1": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_LONGINT-2": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "control-ARRAY_REAL-0": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_REAL-1": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_REAL-2": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "control-ARRAY_TEXT-0": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_TEXT-1": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_TEXT-2": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "control-ARRAY_TIME-0": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_TIME-1": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "control-ARRAY_TIME-2": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "copy-ARRAY_BOOLEAN": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "copy-ARRAY_DATE": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "copy-ARRAY_INTEGER": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "copy-ARRAY_LONGINT": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "copy-ARRAY_REAL": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "copy-ARRAY_TEXT": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "copy-ARRAY_TIME": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "copy-CPicture": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "copy-C_BLOB": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "copy-C_PICTURE": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "copy-C_TEXT": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "dispatcher-callback-abort": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all strings disposed exactly once"
+  ]
+ },
+ "dispatcher-callback-error": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL callback error surfaced"
+  ]
+ },
+ "dispatcher-callback-kind-0": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all strings disposed exactly once"
+  ]
+ },
+ "dispatcher-callback-kind-10": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all strings disposed exactly once"
+  ]
+ },
+ "dispatcher-callback-kind-33": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all strings disposed exactly once"
+  ]
+ },
+ "dispatcher-callback-kind-6": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all strings disposed exactly once"
+  ]
+ },
+ "dispatcher-callback-kind-9": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all strings disposed exactly once"
+  ]
+ },
+ "dispatcher-callback-no-data": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all synthetic exports cleaned up"
+  ]
+ },
+ "dispatcher-resize-error": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "dispatcher-sync": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all pictures disposed exactly once"
+  ]
+ },
+ "dispatcher-sync-no-data": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all pictures disposed exactly once"
+  ]
+ },
+ "dispatcher-unknown": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "embedded-UTF8-conversion": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL scalar explicit UTF8 units survive embedded null"
+  ]
+ },
+ "picture-bytes": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all pictures disposed exactly once"
+  ]
+ },
+ "picture-command-error-1002": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "picture-command-error-457": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL size output values"
+  ]
+ },
+ "picture-command-error-678": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all strings disposed exactly once"
+  ]
+ },
+ "picture-command-error-679": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all pictures disposed exactly once"
+  ]
+ },
+ "picture-command-error-988": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all pictures disposed exactly once"
+  ]
+ },
+ "picture-command-result-0": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all strings disposed exactly once"
+  ]
+ },
+ "picture-command-result-10": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all pictures disposed exactly once"
+  ]
+ },
+ "picture-command-result-33": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all strings disposed exactly once"
+  ]
+ },
+ "picture-command-result-6": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all pictures disposed exactly once"
+  ]
+ },
+ "picture-conversion-error": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL metadata conversion error stops before adopting format"
+  ]
+ },
+ "picture-copy": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "picture-data-allocation-error": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL failed picture load does not poison representation cache"
+  ]
+ },
+ "picture-data-error": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL picture data failure surfaced"
+  ]
+ },
+ "picture-file": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all strings disposed exactly once"
+  ]
+ },
+ "picture-format-0": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "picture-format-1": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "picture-format-2": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "picture-format-3": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all strings disposed exactly once"
+  ]
+ },
+ "picture-grayscale": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all pictures disposed exactly once"
+  ]
+ },
+ "picture-param-return": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all pictures disposed exactly once"
+  ]
+ },
+ "picture-size": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all pictures disposed exactly once"
+  ]
+ },
+ "picture-thumbnail": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL all pictures disposed exactly once"
+  ]
+ },
+ "populated-copy-0": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "populated-copy-1": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "populated-copy-2": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-use-after-free"
+  ]
+ },
+ "resize-existing-ARRAY_BOOLEAN": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "resize-existing-ARRAY_DATE": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "resize-existing-ARRAY_INTEGER": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "resize-existing-ARRAY_LONGINT": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "resize-existing-ARRAY_REAL": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "resize-existing-ARRAY_TEXT": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "resize-existing-ARRAY_TIME": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "resize-failure-ARRAY_BOOLEAN": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "resize-failure-ARRAY_DATE": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "resize-failure-ARRAY_INTEGER": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "resize-failure-ARRAY_LONGINT": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "resize-failure-ARRAY_REAL": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "resize-failure-ARRAY_TEXT": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "resize-failure-ARRAY_TIME": {
+  "exit_code": -6,
+  "signatures": [
+   "ERROR: AddressSanitizer: heap-buffer-overflow"
+  ]
+ },
+ "resize-shrink-ARRAY_BOOLEAN": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL existing resize failure stops"
+  ]
+ },
+ "resize-shrink-ARRAY_DATE": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL existing resize failure stops"
+  ]
+ },
+ "resize-shrink-ARRAY_INTEGER": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL existing resize failure stops"
+  ]
+ },
+ "resize-shrink-ARRAY_LONGINT": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL existing resize failure stops"
+  ]
+ },
+ "resize-shrink-ARRAY_REAL": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL existing resize failure stops"
+  ]
+ },
+ "resize-shrink-ARRAY_TEXT": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL existing resize failure stops"
+  ]
+ },
+ "resize-shrink-ARRAY_TIME": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL existing resize failure stops"
+  ]
+ },
+ "scalar-controls": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "text-indexed-replacement": {
+  "exit_code": 1,
+  "signatures": [
+   "FAIL text indexed replacement does not append"
+  ]
+ },
+ "text-null-empty": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "text-roundtrip-0": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "text-roundtrip-1": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "text-roundtrip-2": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "text-roundtrip-3": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "transfer-contract-0": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "transfer-contract-1": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "transfer-contract-2": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "transfer-contract-3": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "transfer-contract-4": {
+  "exit_code": 0,
+  "signatures": []
+ },
+ "transfer-contract-5": {
+  "exit_code": 0,
+  "signatures": []
+ }
+}

@@ -38,6 +38,8 @@ public:
 	void setSize(uint32_t size);
 	
 	ARRAY_BOOLEAN();
+	ARRAY_BOOLEAN(const ARRAY_BOOLEAN& other) : _CboolArray(new CboolArray(*other._CboolArray)) {}
+	ARRAY_BOOLEAN& operator=(const ARRAY_BOOLEAN& other) { *_CboolArray = *other._CboolArray; return *this; }
 	~ARRAY_BOOLEAN();
 
 };

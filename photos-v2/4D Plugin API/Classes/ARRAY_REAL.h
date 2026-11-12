@@ -38,6 +38,8 @@ public:
 	void setSize(uint32_t size);
 	
 	ARRAY_REAL();
+	ARRAY_REAL(const ARRAY_REAL& other) : _CDoubleArray(new CDoubleArray(*other._CDoubleArray)) {}
+	ARRAY_REAL& operator=(const ARRAY_REAL& other) { *_CDoubleArray = *other._CDoubleArray; return *this; }
 	~ARRAY_REAL();
 
 };

@@ -11,6 +11,7 @@
 
 #include "4DPluginAPI.h"
 #include "4DPlugin.h"
+#include "C_OWNERSHIP.h"
 
 #ifndef errAEEventWouldRequireUserConsent
 enum {
@@ -62,6 +63,20 @@ static PhotosApplication *Photos = [SBApplication applicationWithBundleIdentifie
 
 method_id_t methodId;
 
+class C_ExportFolderCleanup
+{
+	NSURL* _url;
+	C_ExportFolderCleanup(const C_ExportFolderCleanup&);
+	C_ExportFolderCleanup& operator=(const C_ExportFolderCleanup&);
+public:
+	explicit C_ExportFolderCleanup(NSURL* url) : _url([url retain]) {}
+	~C_ExportFolderCleanup()
+	{
+		[[NSFileManager defaultManager]removeItemAtURL:_url error:nil];
+		[_url release];
+	}
+};
+
 void OnStartup()
 {
     requestPermission();
@@ -89,15 +104,19 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params)
 		}
 
 	}
+	catch(const std::exception& error)
+	{
+		NSLog(@"Photos v2: %s", error.what());
+	}
 	catch(...)
 	{
-
+		NSLog(@"Photos v2: unexpected plugin error");
 	}
 }
 
 // ------------------------------------ Photos ------------------------------------
 
-void importImages()
+static void importImagesImpl()
 {
 	BOOL usingOriginals = YES;//NO returns larger images
 	
@@ -117,11 +136,7 @@ void importImages()
 		
 		if((photo) && ([photo id]) && ([photo filename]) && ([photo date]))
 		{
-			PA_Variable params[6];
-			params[0] = PA_CreateVariable(eVK_Picture);
-			params[1] = PA_CreateVariable(eVK_Unistring);
-			params[2] = PA_CreateVariable(eVK_Unistring);
-			params[3] = PA_CreateVariable(eVK_Unistring);
+			C_VariableArguments<6> params;
 			params[4] = PA_CreateVariable(eVK_Longint);
 			params[5] = PA_CreateVariable(eVK_Longint);
 			
@@ -141,12 +156,13 @@ void importImages()
 			PA_SetLongintVariable(&params[5], count);
 			
 			//setup
-			NSUUID *uuid = [[NSUUID alloc]init];
+			NSUUID *uuid = [NSUUID UUID];
 			NSString *folderName = [uuid UUIDString];
 //			NSURL *cachesFolderUrl = (NSURL *)CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)cachesFolder, kCFURLPOSIXPathStyle, true);
 			
 			//export
 			NSURL *exportFolderUrl = [cachesFolderUrl URLByAppendingPathComponent:folderName isDirectory:true];
+			C_ExportFolderCleanup cleanup(exportFolderUrl);
 			[Photos export:[NSArray arrayWithObject:photo] to:exportFolderUrl usingOriginals:usingOriginals];
 			NSURL *exportFileUrl;
 			
@@ -156,37 +172,37 @@ void importImages()
 			}else{
 				exportFileUrl = [exportFolderUrl URLByAppendingPathComponent:photo.filename isDirectory:false];
 			}
-			NSData *data = [[NSData alloc]initWithContentsOfURL:exportFileUrl];
+			NSData *data = [[[NSData alloc]initWithContentsOfURL:exportFileUrl]autorelease];
+			bool stop = false;
 			
 			if(data)
 			{
 				PA_Picture picture = PA_CreatePicture((void*)[data bytes], [data length]);
+				if(PA_GetLastError() != eER_NoErr)
+					throw std::runtime_error("4D callback picture creation failed");
 				PA_SetPictureVariable(&params[0], picture);
-				PA_Variable result = PA_ExecuteMethodByID(methodId, params, 6);
-				[data release];
-				//do we need to clear the picture too?
-				PA_ClearVariable(&params[0]);
-				PA_ClearVariable(&params[1]);
-				PA_ClearVariable(&params[2]);
-				PA_ClearVariable(&params[3]);
-				PA_ClearVariable(&params[4]);
-				PA_ClearVariable(&params[5]);
-				
-				//cleanup
-				[[NSFileManager defaultManager]removeItemAtURL:exportFolderUrl error:nil];
-//				[cachesFolderUrl release];
-				[uuid release];
-				
-				if(result.fType == eVK_Boolean)
+				PA_Variable result = PA_ExecuteMethodByID(methodId, params.data(), 6);
+				const PA_ErrorCode error = PA_GetLastError();
+				if(error != eER_NoErr)
 				{
-					char b = PA_GetBooleanVariable(result);
-					if(b)
-					{
-						break;
-					}
+					throw std::runtime_error("4D callback method failed");
 				}
+				stop = PA_GetVariableKind(result) == eVK_Boolean && PA_GetBooleanVariable(result);
+				PA_ClearVariable(&result);
 			}
+			if(stop)
+				break;
 		}
+	}
+}
+
+void importImages()
+{
+	@autoreleasepool
+	{
+		try { importImagesImpl(); }
+		catch(const std::exception& error) { NSLog(@"Photos v2: %s", error.what()); }
+		catch(...) { NSLog(@"Photos v2: unexpected callback error"); }
 	}
 }
 
@@ -243,7 +259,9 @@ void Photos_GET_SELECTION(PA_PluginParameters params)
 	PackagePtr pParams = (PackagePtr)params->fParameters;
 	
 	//$1
-	PA_Variable Param_selectedNames = PA_CreateVariable(eVK_ArrayPicture);
+	C_VariableArguments<1> selectedOwner;
+	PA_Variable& Param_selectedNames = selectedOwner[0];
+	Param_selectedNames = PA_CreateVariable(eVK_ArrayPicture);
 	/*
 	PA_Variable Param_selectedNames = *((PA_Variable*) pParams[0]);
 	
@@ -307,12 +325,13 @@ void Photos_GET_SELECTION(PA_PluginParameters params)
 					Param_dates.appendUTF16String([[photo date]description]);
 					
 					//setup
-					NSUUID *uuid = [[NSUUID alloc]init];
+					NSUUID *uuid = [NSUUID UUID];
 					NSString *folderName = [uuid UUIDString];
 //					NSURL *cachesFolderUrl = (NSURL *)CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)cachesFolder, kCFURLPOSIXPathStyle, true);
 					
 					//export
 					NSURL *exportFolderUrl = [cachesFolderUrl URLByAppendingPathComponent:folderName isDirectory:true];
+					C_ExportFolderCleanup cleanup(exportFolderUrl);
 					[Photos export:[NSArray arrayWithObject:photo] to:exportFolderUrl usingOriginals:usingOriginals];
 					NSURL *exportFileUrl;
 					if(!usingOriginals)
@@ -323,20 +342,19 @@ void Photos_GET_SELECTION(PA_PluginParameters params)
 						exportFileUrl = [exportFolderUrl URLByAppendingPathComponent:photo.filename isDirectory:false];
 					}
 					
-					NSData *data = [[NSData alloc]initWithContentsOfURL:exportFileUrl];
+					NSData *data = [[[NSData alloc]initWithContentsOfURL:exportFileUrl]autorelease];
 					
 					if(data)
 					{
+						C_ResizeArray(Param_selectedNames, i + 1);
 						PA_Picture picture = PA_CreatePicture((void*)[data bytes], [data length]);
-						PA_ResizeArray(&Param_selectedNames, i + 1);
+						if(PA_GetLastError() != eER_NoErr)
+							throw std::runtime_error("4D selection picture creation failed");
 						PA_SetPictureInArray(Param_selectedNames, i + 1, picture);
-						[data release];
 					}
 					
 					//cleanup
-					[[NSFileManager defaultManager]removeItemAtURL:exportFolderUrl error:nil];
 //					[cachesFolderUrl release];
-					[uuid release];
 					
 				}
 			}
@@ -353,7 +371,8 @@ void Photos_GET_SELECTION(PA_PluginParameters params)
 	}
 	
 //	setArrayParameter(&Param_selectedNames, pParams, 1);
-	PA_SetVariableParameter(params, 1, Param_selectedNames, 0);
+	PA_SetVariableParameter(params, 1, Param_selectedNames, 1);
+	Param_selectedNames = PA_CreateVariable(eVK_Undefined);
 	
 	Param_names.toParamAtIndex(pParams, 2);
 	Param_dates.toParamAtIndex(pParams, 3);

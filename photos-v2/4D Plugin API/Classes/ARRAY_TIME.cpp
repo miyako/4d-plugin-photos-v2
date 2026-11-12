@@ -7,6 +7,7 @@
  */
 
 #include "ARRAY_TIME.h"
+#include "C_OWNERSHIP.h"
 
 void ARRAY_TIME::fromParamAtIndex(PackagePtr pParams, uint32_t index)
 {	
@@ -16,7 +17,7 @@ void ARRAY_TIME::fromParamAtIndex(PackagePtr pParams, uint32_t index)
 
 		this->setSize(0);
 		
-		if(arr.fType == eVK_ArrayTime)
+		if(arr.fType == eVK_ArrayTime && arr.uValue.fArray.fData)
 		{
 			uint32_t i;
 			
@@ -40,6 +41,7 @@ void ARRAY_TIME::toParamAtIndex(PackagePtr pParams, uint32_t index)
 	{
 		PA_Variable arr = *((PA_Variable*) pParams[index - 1]);
 		PA_Variable *param = ((PA_Variable *)pParams[index - 1]);
+		const bool ownsArray = arr.fType == eVK_Undefined;
 		
 		switch (arr.fType) 
 		{
@@ -48,7 +50,6 @@ void ARRAY_TIME::toParamAtIndex(PackagePtr pParams, uint32_t index)
 			case eVK_Undefined:
 				PA_ClearVariable(&arr);
 				arr = PA_CreateVariable(eVK_ArrayTime);
-				param->fType = arr.fType;
 				break;				
 				
 			default:
@@ -58,7 +59,7 @@ void ARRAY_TIME::toParamAtIndex(PackagePtr pParams, uint32_t index)
 		if(arr.fType == eVK_ArrayTime)
 		{
 			
-			PA_ResizeArray(&arr, this->_CIntArray->empty() ? 0 : (uint32_t)(this->_CIntArray->size() - 1));
+			C_ResizeArray(arr, this->_CIntArray->empty() ? 0 : (uint32_t)(this->_CIntArray->size() - 1), ownsArray);
 			
 			uint32_t i;
 			
@@ -67,6 +68,7 @@ void ARRAY_TIME::toParamAtIndex(PackagePtr pParams, uint32_t index)
 				PA_SetTimeInArray(arr, i, this->_CIntArray->at(i));	
 			}
 			
+			param->fType = arr.fType;
 			param->fFiller = 0;
 			param->uValue.fArray.fCurrent = arr.uValue.fArray.fCurrent;
 			param->uValue.fArray.fNbElements = arr.uValue.fArray.fNbElements;

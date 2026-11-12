@@ -7,6 +7,7 @@
  */
 
 #include "ARRAY_INTEGER.h"
+#include "C_OWNERSHIP.h"
 
 void ARRAY_INTEGER::fromParamAtIndex(PackagePtr pParams, uint16_t index)
 {	
@@ -16,7 +17,7 @@ void ARRAY_INTEGER::fromParamAtIndex(PackagePtr pParams, uint16_t index)
 
 		this->setSize(0);
 		
-		if(arr.fType == eVK_ArrayInteger)
+		if(arr.fType == eVK_ArrayInteger && arr.uValue.fArray.fData)
 		{
 			uint32_t i;
 			
@@ -40,6 +41,7 @@ void ARRAY_INTEGER::toParamAtIndex(PackagePtr pParams, uint16_t index)
 	{
 		PA_Variable arr = *((PA_Variable*) pParams[index - 1]);
 		PA_Variable *param = ((PA_Variable *)pParams[index - 1]);
+		const bool ownsArray = arr.fType == eVK_Undefined;
 		
 		switch (arr.fType) 
 		{
@@ -48,7 +50,6 @@ void ARRAY_INTEGER::toParamAtIndex(PackagePtr pParams, uint16_t index)
 			case eVK_Undefined:
 				PA_ClearVariable(&arr);
 				arr = PA_CreateVariable(eVK_ArrayInteger);
-				param->fType = arr.fType;
 				break;				
 				
 			default:
@@ -58,7 +59,7 @@ void ARRAY_INTEGER::toParamAtIndex(PackagePtr pParams, uint16_t index)
 		if(arr.fType == eVK_ArrayInteger)
 		{
 			
-			PA_ResizeArray(&arr, this->_CShortArray->empty() ? 0 : (uint32_t)(this->_CShortArray->size() - 1));
+			C_ResizeArray(arr, this->_CShortArray->empty() ? 0 : (uint32_t)(this->_CShortArray->size() - 1), ownsArray);
 			
 			uint32_t i;
 			
@@ -67,6 +68,7 @@ void ARRAY_INTEGER::toParamAtIndex(PackagePtr pParams, uint16_t index)
 				PA_SetIntegerInArray(arr, i, this->_CShortArray->at(i));	
 			}
 			
+			param->fType = arr.fType;
 			param->fFiller = 0;
 			param->uValue.fArray.fCurrent = arr.uValue.fArray.fCurrent;
 			param->uValue.fArray.fNbElements = arr.uValue.fArray.fNbElements;

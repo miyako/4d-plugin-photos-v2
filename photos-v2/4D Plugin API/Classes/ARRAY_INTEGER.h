@@ -38,6 +38,8 @@ public:
 	void setSize(uint32_t size);
 	
 	ARRAY_INTEGER();
+	ARRAY_INTEGER(const ARRAY_INTEGER& other) : _CShortArray(new CShortArray(*other._CShortArray)) {}
+	ARRAY_INTEGER& operator=(const ARRAY_INTEGER& other) { *_CShortArray = *other._CShortArray; return *this; }
 	~ARRAY_INTEGER();
 
 };

@@ -41,6 +41,8 @@ public:
 	void setSize(uint32_t size);
 	
 	ARRAY_DATE();
+	ARRAY_DATE(const ARRAY_DATE& other) : _CDateArray(new CDateArray(*other._CDateArray)) {}
+	ARRAY_DATE& operator=(const ARRAY_DATE& other) { *_CDateArray = *other._CDateArray; return *this; }
 	~ARRAY_DATE();
 
 };

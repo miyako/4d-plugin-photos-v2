@@ -7,6 +7,7 @@
  */
 
 #include "C_BLOB.h"
+#include <stdexcept>
 
 /* PA_YieldAbsolute isn't allowed in preemptive mode */
 
@@ -24,6 +25,8 @@ void CBytes::fromParamAtIndex(PA_PluginParameters params, uint32_t index)
 			bytes = &buf[0];
 			PA_GetBlobParameter(params, index, bytes);
 			this->setBytes((const uint8_t *)bytes, len);
+		}else{
+			this->setBytes(NULL, 0);
 		}
 	}
 }
@@ -39,10 +42,10 @@ void CBytes::fromParamAtIndex(PackagePtr pParams, uint32_t index)
 		{
 			unsigned int size = PA_GetHandleSize(h);
 			
-			this->_CBytes.resize(size);
-			memmove((char *)&this->_CBytes[0], PA_LockHandle(h), size);
-//		PA_MoveBlock(PA_LockHandle(h), (char *)&this->_CBytes[0], size);
+			this->setBytes((const uint8_t *)PA_LockHandle(h), size);
 			PA_UnlockHandle(h);
+		}else{
+			this->setBytes(NULL, 0);
 		}
 	}
 }
@@ -53,8 +56,6 @@ void CBytes::toParamAtIndex(PackagePtr pParams, uint32_t index)
 	{
 		PA_Handle *h = (PA_Handle *)(pParams[index - 1]);
 		
-		if (*h) PA_DisposeHandle(*h);
-				
 		PA_Handle d = PA_NewHandle((unsigned int)this->_CBytes.size());
 		/* PA_NewHandle can fail before ACI0098388 */
 		if(eER_NoErr == PA_GetLastError())
@@ -66,29 +67,36 @@ void CBytes::toParamAtIndex(PackagePtr pParams, uint32_t index)
 				PA_UnlockHandle(d);
 			}
 			
+			if (*h) PA_DisposeHandle(*h);
 			*h = d;
+		}else{
+			throw std::runtime_error("4D BLOB allocation failed");
 		}
 	}
 }
 
 void CBytes::setBytes(const uint8_t *bytes, unsigned int len)
 {	
-	if(bytes)
+	if(!len)
 	{
-		this->_CBytes.resize(len);
-		memmove((char *)&this->_CBytes[0], (void *)bytes, len);
-//	PA_MoveBlock((void *)bytes, (char *)&this->_CBytes[0], len);
+		this->_CBytes.clear();
+	}else{
+		if(!bytes)
+			throw std::invalid_argument("NULL BLOB data with nonzero length");
+		std::vector<uint8_t> copy(bytes, bytes + len);
+		this->_CBytes.swap(copy);
 	}
+	this->_cursorPosition = 0;
 }
 
 void CBytes::addBytes(const uint8_t *bytes, unsigned int len)
 {	
-	if(bytes)
+	if(len)
 	{
-		unsigned int originalSize = this->_CBytes.size();
-		this->_CBytes.resize(originalSize + len);
-		memmove((char *)&this->_CBytes[originalSize], (void *)bytes, len);
-//	PA_MoveBlock((void *)bytes, (char *)&this->_CBytes[originalSize], len);
+		if(!bytes)
+			throw std::invalid_argument("NULL BLOB data with nonzero length");
+		std::vector<uint8_t> copy(bytes, bytes + len);
+		this->_CBytes.insert(this->_CBytes.end(), copy.begin(), copy.end());
 	}
 }
 
@@ -108,6 +116,8 @@ void CBytes::setReturn(sLONG_PTR *pResult)
 			PA_UnlockHandle(d);
 		}
 		*h = d;
+	}else{
+		throw std::runtime_error("4D BLOB allocation failed");
 	}
 
 }

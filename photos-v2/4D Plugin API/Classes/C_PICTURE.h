@@ -68,6 +68,8 @@ extern "C" {
 		PA_Picture createThumbnail(unsigned int width, unsigned int height);
 		
 		CPicture();	
+		CPicture(const CPicture& other);
+		CPicture& operator=(const CPicture& other);
 		~CPicture();
 		
 	};
@@ -111,6 +113,8 @@ extern "C" {
 		PA_Picture createThumbnail(unsigned int width, unsigned int height);
 		
 		C_PICTURE();
+		C_PICTURE(const C_PICTURE& other) : _CPicture(new CPicture(*other._CPicture)) {}
+		C_PICTURE& operator=(const C_PICTURE& other) { *_CPicture = *other._CPicture; return *this; }
 		~C_PICTURE();
 		
 	};
