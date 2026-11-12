@@ -70,6 +70,8 @@ extern "C" {
 		void copyPath(CUTF8String* pString);
 		
 		C_TEXT();
+		C_TEXT(const C_TEXT& other) : _CUTF16String(new CUTF16String(*other._CUTF16String)) {}
+		C_TEXT& operator=(const C_TEXT& other) { *_CUTF16String = *other._CUTF16String; return *this; }
 		~C_TEXT();
 		
 	};

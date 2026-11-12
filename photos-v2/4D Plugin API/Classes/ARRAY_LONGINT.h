@@ -38,6 +38,8 @@ public:
 	void setSize(uint32_t size);
 	
 	ARRAY_LONGINT();
+	ARRAY_LONGINT(const ARRAY_LONGINT& other) : _CIntArray(new CIntArray(*other._CIntArray)) {}
+	ARRAY_LONGINT& operator=(const ARRAY_LONGINT& other) { *_CIntArray = *other._CIntArray; return *this; }
 	~ARRAY_LONGINT();
 
 };

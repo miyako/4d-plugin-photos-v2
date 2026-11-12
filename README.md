@@ -25,6 +25,21 @@ See [build-application](https://github.com/miyako/4d-utility-build-application)
 
 [4d-plugin-apple-file-promises](https://github.com/miyako/4d-plugin-apple-file-promises)
 
+## Ownership tests
+
+`tests/ownership` compiles the bundled 4D Plugin API, the wrapper classes and `4DPlugin.cpp` with AddressSanitizer and UndefinedBehaviorSanitizer against a synthetic in-memory engine and synthetic Photos/AppKit/ScriptingBridge/Carbon stubs. It never accesses the Photos library, files, the network or the UI.
+
+```
+python3 tests/ownership/compare.py
+```
+
+This runs the same harness on the immutable baseline (expected failures are recorded in `tests/ownership/baseline.json`) and on the current sources (all cases must pass). Notes:
+
+* Array, text, BLOB and picture wrappers own deep copies. `PA_SetStringInArray`/`PA_SetPictureInArray` transfer ownership only when the index is accepted.
+* A failed `PA_ResizeArray` may still change the logical count. The wrappers restore it and throw.
+* Command and method results are adopted only after `PA_GetLastError` reports success.
+* Gaps: no Windows, real 4D host, real Photos, genuine out-of-memory, packed alignment or LeakSanitizer coverage.
+
 ## Attention
 
 You should disable iCould photo library update, or select "download original to this Mac", to prevent Photo from attempting to access the internet. Otherwise, the import could fail, and the application could freeze, if internet connection in unavailable.

@@ -7,6 +7,7 @@
  */
 
 #include "ARRAY_BOOLEAN.h"
+#include "C_OWNERSHIP.h"
 
 static unsigned char tabTrue [ 8 ] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 
@@ -23,7 +24,7 @@ void ARRAY_BOOLEAN::fromParamAtIndex(PackagePtr pParams, uint16_t index)
 
 		this->setSize(0);
 		
-		if(arr.fType == eVK_ArrayBoolean)
+		if(arr.fType == eVK_ArrayBoolean && arr.uValue.fArray.fData)
 		{
 			uint32_t i;
 			
@@ -47,6 +48,7 @@ void ARRAY_BOOLEAN::toParamAtIndex(PackagePtr pParams, uint16_t index)
 	{
 		PA_Variable arr = *((PA_Variable*) pParams[index - 1]);
 		PA_Variable *param = ((PA_Variable *)pParams[index - 1]);
+		const bool ownsArray = arr.fType == eVK_Undefined;
 		
 		switch (arr.fType) 
 		{
@@ -55,7 +57,6 @@ void ARRAY_BOOLEAN::toParamAtIndex(PackagePtr pParams, uint16_t index)
 			case eVK_Undefined:
 				PA_ClearVariable(&arr);				
 				arr = PA_CreateVariable(eVK_ArrayBoolean);
-				param->fType = arr.fType;
 				break;				
 				
 			default:
@@ -65,7 +66,7 @@ void ARRAY_BOOLEAN::toParamAtIndex(PackagePtr pParams, uint16_t index)
 		if(arr.fType == eVK_ArrayBoolean)
 		{
 			
-			PA_ResizeArray(&arr, this->_CboolArray->empty() ? 0 : (uint32_t)(this->_CboolArray->size() - 1));
+			C_ResizeArray(arr, this->_CboolArray->empty() ? 0 : (uint32_t)(this->_CboolArray->size() - 1), ownsArray);
 			
 			uint32_t i;
 			
@@ -74,6 +75,7 @@ void ARRAY_BOOLEAN::toParamAtIndex(PackagePtr pParams, uint16_t index)
 				PA_SetBooleanInArray(arr, i, this->_CboolArray->at(i));	
 			}
 			
+			param->fType = arr.fType;
 			param->fFiller = 0;
 			param->uValue.fArray.fCurrent = arr.uValue.fArray.fCurrent;
 			param->uValue.fArray.fNbElements = arr.uValue.fArray.fNbElements;

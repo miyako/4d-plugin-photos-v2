@@ -79,6 +79,8 @@ extern "C" {
 		void toB64Text(C_TEXT *b64, bool fold = false);
 		
 		C_BLOB();
+		C_BLOB(const C_BLOB& other) : _CBytes(new CBytes(*other._CBytes)) {}
+		C_BLOB& operator=(const C_BLOB& other) { *_CBytes = *other._CBytes; return *this; }
 		~C_BLOB();
 		
 	};

@@ -38,6 +38,8 @@ public:
 	void setSize(uint32_t size);
 	
 	ARRAY_TIME();
+	ARRAY_TIME(const ARRAY_TIME& other) : _CIntArray(new CIntArray(*other._CIntArray)) {}
+	ARRAY_TIME& operator=(const ARRAY_TIME& other) { *_CIntArray = *other._CIntArray; return *this; }
 	~ARRAY_TIME();
 
 };
