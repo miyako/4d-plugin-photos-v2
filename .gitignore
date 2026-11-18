@@ -1,0 +1,6 @@
+.DS_Store
+build/
+*.4dbase/Logs/
+*.4dbase/userPreferences.*/
+Photos v2.4dbase/Plugins/Photos v2.bundle/Contents/MacOS/
+Photos v2.4dbase/Plugins/Photos v2.bundle/Contents/_CodeSignature/
