@@ -16,6 +16,10 @@ args = parser.parse_args()
 root = Path(args.root).resolve()
 here = Path(__file__).resolve().parent
 plugin = root / "photos-v2"
+if not plugin.is_dir():
+    # Project was flattened to the repository root; the baseline archive
+    # still extracts the legacy photos-v2/ subdirectory.
+    plugin = root
 sdk = plugin / "4D Plugin API"
 sources = [sdk / "4DPluginAPI.c", *sorted((sdk / "Classes").glob("*.cpp")),
            plugin / "4DPlugin.cpp", here / "main.mm"]
@@ -76,12 +80,14 @@ with tempfile.TemporaryDirectory(prefix="photos-v2-ownership-") as directory:
         "_NSZeroSize", "__DefaultRuneLocale",
         "__objc_empty_cache",
     }
-    allowed_classes = {"NSObject", "NSString", "NSMutableString", "NSArray", "NSAutoreleasePool"}
+    allowed_classes = {"NSObject", "NSString", "NSMutableString", "NSArray", "NSAutoreleasePool", "NSException"}
     unexpected = []
     for symbol in (line.strip() for line in imports.splitlines() if line.strip()):
         if any(name in symbol for name in ("fstream", "filebuf", "filesystem", "random_device")):
             raise RuntimeError("external data import: " + symbol)
         if symbol.startswith("_OBJC_CLASS_$_") and symbol.split("$_", 1)[1] in allowed_classes:
+            continue
+        if symbol.startswith("_OBJC_EHTYPE_$_") and symbol.split("$_", 1)[1] in allowed_classes:
             continue
         if symbol in exact or symbol.startswith(("___", "__Z", "_objc_", "_OBJC_METACLASS_$_NSObject")):
             continue

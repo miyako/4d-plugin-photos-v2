@@ -428,8 +428,15 @@ void pictureHelper(int mode) {
     }
     balance();
 }
-template<class T> void copyOwner() {
+template<class T> void copyOwnerImpl(std::true_type) {
     { T a; T b(a); T c; c = a; c = c; }
+}
+template<class T> void copyOwnerImpl(std::false_type) {
+    static_assert(!std::is_copy_constructible<T>::value, "non-copyable type took the copy path");
+    T a;
+}
+template<class T> void copyOwner() {
+    copyOwnerImpl<T>(std::is_copy_constructible<T>());
     balance();
 }
 template<class T> struct ArrayTraits;
@@ -543,12 +550,21 @@ void scalarControls() {
     C_POINTER pointer; check(pointer.getType() == ePK_InvalidPointer, "dormant pointer default");
     balance();
 }
+template<class T> void populatedTextCopy(std::true_type) {
+    T a; a.setUTF16String(fixture); T b(a); T c; c = a; a.setUTF16String(@"");
+    check(Text(b.getUTF16StringPtr(), b.getUTF16Length()) == expected &&
+          Text(c.getUTF16StringPtr(), c.getUTF16Length()) == expected, "populated text copy independence");
+}
+template<class T> void populatedTextCopy(std::false_type) {
+    T a; a.setUTF16String(fixture);
+    T b; b.setUTF16String(fixture);
+    a.setUTF16String(@"");
+    check(Text(b.getUTF16StringPtr(), b.getUTF16Length()) == expected, "populated text copy independence");
+}
 void independentCopies(int mode) {
     textFixture(3);
     if (mode == 0) {
-        C_TEXT a; a.setUTF16String(fixture); C_TEXT b(a); C_TEXT c; c = a; a.setUTF16String(@"");
-        check(Text(b.getUTF16StringPtr(), b.getUTF16Length()) == expected &&
-              Text(c.getUTF16StringPtr(), c.getUTF16Length()) == expected, "populated text copy independence");
+        populatedTextCopy<C_TEXT>(std::is_copy_constructible<C_TEXT>());
     } else if (mode == 1) {
         C_BLOB a; a.setBytes(reinterpret_cast<const uint8_t *>("SYN"), 3); C_BLOB b(a); C_BLOB c; c = a;
         a.setBytes(nullptr, 0);

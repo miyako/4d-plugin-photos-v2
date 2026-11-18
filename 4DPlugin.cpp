@@ -13,12 +13,6 @@
 #include "4DPlugin.h"
 #include "C_OWNERSHIP.h"
 
-#ifndef errAEEventWouldRequireUserConsent
-enum {
-    errAEEventWouldRequireUserConsent     =     -1744
-};
-#endif
-
 void requestPermission(){
     
     if (@available(macOS 10.14, *)) {
@@ -200,9 +194,16 @@ void importImages()
 {
 	@autoreleasepool
 	{
-		try { importImagesImpl(); }
-		catch(const std::exception& error) { NSLog(@"Photos v2: %s", error.what()); }
-		catch(...) { NSLog(@"Photos v2: unexpected callback error"); }
+		@try
+		{
+			try { importImagesImpl(); }
+			catch(const std::exception& error) { NSLog(@"Photos v2: %s", error.what()); }
+			catch(...) { NSLog(@"Photos v2: unexpected callback error"); }
+		}
+		@catch (NSException *exception)
+		{
+			NSLog(@"Photos v2: Photos automation failed: %@", exception);
+		}
 	}
 }
 
@@ -305,68 +306,78 @@ void Photos_GET_SELECTION(PA_PluginParameters params)
 	NSString *cachesFolder = [paths objectAtIndex:0];
 	*/
 	
-	NSURL *cachesFolderUrl = makeTemporaryFolder();
-	
-	if(Photos)
+	@autoreleasepool
 	{
-		if(!import_async)
+		@try
 		{
-			NSArray *photos = [Photos selection];
-			
-			for(NSUInteger i = 0; i < [photos count]; ++i)
-			{
-				PA_YieldAbsolute();
-				PhotosMediaItem *photo = (PhotosMediaItem *)[photos objectAtIndex:i];
+			NSURL *cachesFolderUrl = makeTemporaryFolder();
 
-				if((photo) && ([photo id]) && ([photo filename]) && ([photo date]))
+			if(Photos)
+			{
+				if(!import_async)
 				{
-					Param_ids.appendUTF16String([photo id]);
-					Param_names.appendUTF16String([photo filename]);
-					Param_dates.appendUTF16String([[photo date]description]);
-					
-					//setup
-					NSUUID *uuid = [NSUUID UUID];
-					NSString *folderName = [uuid UUIDString];
-//					NSURL *cachesFolderUrl = (NSURL *)CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)cachesFolder, kCFURLPOSIXPathStyle, true);
-					
-					//export
-					NSURL *exportFolderUrl = [cachesFolderUrl URLByAppendingPathComponent:folderName isDirectory:true];
-					C_ExportFolderCleanup cleanup(exportFolderUrl);
-					[Photos export:[NSArray arrayWithObject:photo] to:exportFolderUrl usingOriginals:usingOriginals];
-					NSURL *exportFileUrl;
-					if(!usingOriginals)
+					NSArray *photos = [Photos selection];
+
+					for(NSUInteger i = 0; i < [photos count]; ++i)
 					{
-						//the extension is changed to jpg
-						exportFileUrl = [exportFolderUrl URLByAppendingPathComponent:[[photo.filename stringByDeletingPathExtension]stringByAppendingString:@".jpg"] isDirectory:false];
-					}else{
-						exportFileUrl = [exportFolderUrl URLByAppendingPathComponent:photo.filename isDirectory:false];
+						PA_YieldAbsolute();
+						PhotosMediaItem *photo = (PhotosMediaItem *)[photos objectAtIndex:i];
+
+						if((photo) && ([photo id]) && ([photo filename]) && ([photo date]))
+						{
+							Param_ids.appendUTF16String([photo id]);
+							Param_names.appendUTF16String([photo filename]);
+							Param_dates.appendUTF16String([[photo date]description]);
+
+							//setup
+							NSUUID *uuid = [NSUUID UUID];
+							NSString *folderName = [uuid UUIDString];
+//							NSURL *cachesFolderUrl = (NSURL *)CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)cachesFolder, kCFURLPOSIXPathStyle, true);
+
+							//export
+							NSURL *exportFolderUrl = [cachesFolderUrl URLByAppendingPathComponent:folderName isDirectory:true];
+							C_ExportFolderCleanup cleanup(exportFolderUrl);
+							[Photos export:[NSArray arrayWithObject:photo] to:exportFolderUrl usingOriginals:usingOriginals];
+							NSURL *exportFileUrl;
+							if(!usingOriginals)
+							{
+								//the extension is changed to jpg
+								exportFileUrl = [exportFolderUrl URLByAppendingPathComponent:[[photo.filename stringByDeletingPathExtension]stringByAppendingString:@".jpg"] isDirectory:false];
+							}else{
+								exportFileUrl = [exportFolderUrl URLByAppendingPathComponent:photo.filename isDirectory:false];
+							}
+
+							NSData *data = [[[NSData alloc]initWithContentsOfURL:exportFileUrl]autorelease];
+
+							if(data)
+							{
+								C_ResizeArray(Param_selectedNames, i + 1);
+								PA_Picture picture = PA_CreatePicture((void*)[data bytes], [data length]);
+								if(PA_GetLastError() != eER_NoErr)
+									throw std::runtime_error("4D selection picture creation failed");
+								PA_SetPictureInArray(Param_selectedNames, i + 1, picture);
+							}
+
+							//cleanup
+//							[cachesFolderUrl release];
+
+						}
 					}
-					
-					NSData *data = [[[NSData alloc]initWithContentsOfURL:exportFileUrl]autorelease];
-					
-					if(data)
-					{
-						C_ResizeArray(Param_selectedNames, i + 1);
-						PA_Picture picture = PA_CreatePicture((void*)[data bytes], [data length]);
-						if(PA_GetLastError() != eER_NoErr)
-							throw std::runtime_error("4D selection picture creation failed");
-						PA_SetPictureInArray(Param_selectedNames, i + 1, picture);
-					}
-					
-					//cleanup
-//					[cachesFolderUrl release];
-					
-				}
-			}
-			
-		}else{
-			//async
-			C_TEXT processName;
-			generateUuid(processName);
-			Param_processId.setIntValue(
-			PA_NewProcess((void *)importImages,
+
+				}else{
+					//async
+					C_TEXT processName;
+					generateUuid(processName);
+					Param_processId.setIntValue(
+					PA_NewProcess((void *)importImages,
 										0,
 										(PA_Unichar *)processName.getUTF16StringPtr()));
+				}
+			}
+		}
+		@catch (NSException *exception)
+		{
+			NSLog(@"Photos v2: Photos automation failed: %@", exception);
 		}
 	}
 	
